@@ -1,5 +1,5 @@
-# Write a applet program to print String
-Program:
+# 1) Write a applet program to print String
+# Program:
 
 import java.applet.Applet;
 import java.awt.Graphics;
@@ -11,6 +11,8 @@ public class PrintString extends Applet {
 }
 
 #HTML File:
+#PrintString.html
+
 <html>
 <body>
     <applet code="PrintString.class" width="300" height="300">
@@ -21,8 +23,9 @@ public class PrintString extends Applet {
 
 
 
-#Write a program to implement simple applet that set Fore ground , Back ground color drawa rectangle, fill a rectangle and display it.
-Program:
+# 2) Write a program to implement simple applet that set Fore ground , Back ground color drawa rectangle, fill a rectangle and display it.
+# Program:
+
 import java.applet.Applet;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -39,7 +42,8 @@ public class ColorRectangleApplet extends Applet {
     }
 }
 
-HTML File:
+#HTML File:
+#ColorRectangleApplet.html
 
   <body>
     <applet code="ColorRectangleApplet.class" width="400" height="400">
@@ -51,8 +55,8 @@ HTML File:
 
 
 
-#Write a Java Applet program to create a simple GUI  consists of  Button, Radio Button, Text Field, Checkbox, and Label.
-Program:
+# 3) Write a Java Applet program to create a simple GUI  consists of  Button, Radio Button, Text Field, Checkbox, and Label.
+# Program:
 import java.applet.Applet;
 import java.awt.*;
 public class SimpleGUIApplet extends Applet {
@@ -74,7 +78,9 @@ public class SimpleGUIApplet extends Applet {
     }
 }
 
-HTML File:
+# HTML File:
+#SimpleGUIApplet.html
+
 <html>
   <body>
     <applet code="SimpleGUIApplet.class" width="300" height="200">
@@ -83,3 +89,181 @@ HTML File:
 </html>
 
 
+
+
+# 4) AIM : Develop an  Applet that draws a circle. The Dimension of the applet should be 500 × 300 pixels. The circle should be centered in the  applet and have a radius of 100 pixels. Display  your name inside centered dina circle (Using drawOval() method).
+# Program:
+
+import java.applet.Applet;
+import java.awt.*;
+/* 
+<applet code="MyCircleApplet.class" width="500" height="300"></applet>
+*/
+public class MyCircleApplet extends Applet {
+    public void paint(Graphics g) {
+        int appletWidth = getWidth();   
+        int appletHeight = getHeight(); 
+        int radius = 100;
+        int centerX = appletWidth / 2;
+        int centerY = appletHeight / 2;
+        g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        String name = "Prince";
+        FontMetrics fm = g.getFontMetrics();
+        int textWidth = fm.stringWidth(name);
+        int textHeight = fm.getAscent();
+        g.drawString(name, centerX - textWidth / 2, centerY + textHeight / 4);
+    }
+}
+
+#HTML File:
+#MyCircleApplet.html
+
+<html>
+  <body>
+    <applet code="MyCircleApplet.class" width="500" height="300"></applet>
+  </body>
+</html>
+
+
+
+
+
+# 5) Draw  ten Black circles in a vertical column in the center of the applet. 
+Program:
+import java.applet.Applet;
+import java.awt.*;
+/* 
+<applet code="TenCirclesApplet.class" width="500" height="500"></applet>
+*/
+public class TenCirclesApplet extends Applet {
+    public void paint(Graphics g) {
+        setBackground(Color.WHITE);
+        g.setColor(Color.BLACK);
+        int appletWidth = getWidth();
+        int appletHeight = getHeight();
+        int circleDiameter = 40;   // Each circle's diameter
+        int spacing = 10;          // Space between circles
+        int x = (appletWidth - circleDiameter) / 2;
+        int totalHeight = (10 * circleDiameter) + (9 * spacing);
+        int startY = (appletHeight - totalHeight) / 2;
+        for (int i = 0; i < 10; i++) {
+            int y = startY + i * (circleDiameter + spacing);
+            g.fillOval(x, y, circleDiameter, circleDiameter);  // <-- Filled circle
+        }
+    }
+}
+
+
+
+
+
+# 6) Develop a program that has only one button in the frame, clicking on the button cycles through the colors : Red - Green - Blue and so on. One color changes per click.(use getBackGround() method to get the current color).
+#Program :
+#ColorCycleFrame.java
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class ColorCycleFrame extends JFrame implements ActionListener {
+    JButton btn;
+
+    public ColorCycleFrame() {
+        setTitle("Color Cycle Program");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new FlowLayout());
+
+        btn = new JButton("Change Color");
+        btn.addActionListener(this);
+        add(btn);
+
+        getContentPane().setBackground(Color.RED);
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Color current = getContentPane().getBackground();
+
+        if (current.equals(Color.RED)) {
+            getContentPane().setBackground(Color.GREEN);
+        } else if (current.equals(Color.GREEN)) {
+            getContentPane().setBackground(Color.BLUE);
+        } else {
+            getContentPane().setBackground(Color.RED);
+        }
+    }
+
+    public static void main(String[] args) {
+        new ColorCycleFrame();
+    }
+}
+
+
+# ColorCycleFrame.html
+<html>
+<body>
+<applet code="ColorCycleFrame.class" width="300" height="200"></applet>>
+</body>
+</html>
+
+
+
+
+
+
+# 7) Develop an program that contains three check boxes and 30 x 30 pixel canvas. The three checkboxes should be labeled “Red”, “Green”,
+“Blue”. The selection of the check boxes determine the color of the canvas. For example, if the user selects both “Red” and “Blue”,the canvas should be purple.
+
+# Program 
+import java.applet.Applet;
+import java.awt.*;
+import java.awt.event.*;
+
+public class ColorCanvasApplet extends Applet implements ItemListener {
+    Checkbox red, green, blue;
+    Canvas colorCanvas;
+
+    public void init() {
+        setLayout(new FlowLayout());
+
+        red = new Checkbox("Red");
+        green = new Checkbox("Green");
+        blue = new Checkbox("Blue");
+
+        red.addItemListener(this);
+        green.addItemListener(this);
+        blue.addItemListener(this);
+
+        colorCanvas = new Canvas();
+        colorCanvas.setSize(100, 100);
+
+        add(red);
+        add(green);
+        add(blue);
+        add(colorCanvas);
+
+        updateColor();
+    }
+
+    public void itemStateChanged(ItemEvent e) {
+        updateColor();
+    }
+
+    private void updateColor() {
+        int r = red.getState() ? 255 : 0;
+        int g = green.getState() ? 255 : 0;
+        int b = blue.getState() ? 255 : 0;
+
+        colorCanvas.setBackground(new Color(r, g, b));
+        colorCanvas.repaint();
+    }
+}
+
+#ColorCanvasApplet.html
+<html>
+  <body>
+    <applet code="ColorCanvasApplet.class" width="300" height="200"></applet>
+  </body>
+</html>
