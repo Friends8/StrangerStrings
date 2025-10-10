@@ -603,6 +603,7 @@ public class TrafficControl {
 
 
 
+
 10) Movie Ticket
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -616,12 +617,14 @@ class Ticket {
     String movieName;
     int seatNumber;
     String customerName;
-    
-    public Ticket(String movieName,  int seatNumber,  String customerName) {
+
+    public Ticket(String movieName, int seatNumber, String customerName) {
         this.movieName = movieName;
         this.seatNumber = seatNumber;
         this.customerName = customerName;
     }
+
+    @Override
     public String toString() {
         return movieName + "," + seatNumber + "," + customerName;
     }
@@ -629,69 +632,158 @@ class Ticket {
 
 public class MovieTicketCRUD {
     static File ticketFile = new File("ticket.txt");
-    static String[] movies = ("1. Avengers", "2.Inception", "3. Avatar");
+    static String[] movies = {"Avengers", "Inception", "Avatar"};
     static int totalSeats = 10;
-    
-    public static void writerToFile(List<String> records) {
-        try (Filewriter fw = new Filewriter(ticketFile, false)) {
-            for (String r : records) fw.writer(r + "\n");
-        } catch(IOException e) {
-            System.out.println("Error writing file");
+
+    // Write list of records to file
+    public static void writeToFile(List<String> records) {
+        try (FileWriter fw = new FileWriter(ticketFile, false)) {
+            for (String r : records)
+                fw.write(r + "\n");
+        } catch (IOException e) {
+            System.out.println("Error writing file: " + e.getMessage());
         }
     }
+
+    // Read all lines from file
     public static List<String> readFile() {
         List<String> lines = new ArrayList<>();
-        if (!ticketFile.exists()) return lines;
+        if (!ticketFile.exists())
+            return lines;
         try (Scanner sc = new Scanner(ticketFile)) {
-            while (sc.hasNextLine()) lines.add(sc.nextLine());
-        } catch(IOException e) {
-            System.out.println("Error writing file");
-    }
+            while (sc.hasNextLine())
+                lines.add(sc.nextLine());
+        } catch (Exception e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
         return lines;
-}
-    
+    }
+
+    // Book a ticket
     public static void bookTicket(Ticket t) {
         List<String> records = readFile();
-        for (String lines : records) {
-            String[] data = line.aplit(",");
-            if (data[0].equlsIgnoreCase(t.movieName) && Integer.parseInt(data[1]) == t.seatNumber) {
-                System.out.println("seat Already Booked");
+        for (String line : records) {
+            String[] data = line.split(",");
+            if (data[0].equalsIgnoreCase(t.movieName) && Integer.parseInt(data[1]) == t.seatNumber) {
+                System.out.println("Seat Already Booked!");
                 return;
             }
         }
         records.add(t.toString());
         writeToFile(records);
-        System.out.println("Ticket booked for " + t.customerName + " | Movie:" + t.movieName + "| Seat:" + t.seatNumber);
+        System.out.println("Ticket booked for " + t.customerName + " | Movie: " + t.movieName + " | Seat: " + t.seatNumber);
     }
-    
+
+    // View all bookings
     public static void viewBookings() {
-        List<String> records = new readFile();
+        List<String> records = readFile();
         if (records.isEmpty()) {
             System.out.println("No Booking Found");
             return;
-    }
-        System.out.println("\n--- All Booking ---");
+        }
+        System.out.println("\n--- All Bookings ---");
         for (String line : records) {
             String[] d = line.split(",");
-            System.out.println("Movie:" + d[0] + " | Seat:" d[1] + " | Customer:" + d[2]);
+            System.out.println("Movie: " + d[0] + " | Seat: " + d[1] + " | Customer: " + d[2]);
         }
     }
-    
+
+    // Update a booking by customer name
     public static void updateBooking(String customerName, int newSeat) {
         List<String> records = readFile();
         boolean updated = false;
+
         for (int i = 0; i < records.size(); i++) {
-            String[] d = records.get(i).split(",");
-            if (d[2].equlsIgnoreCase (customerName)) {
+            String[] data = records.get(i).split(",");
+            // Find the customer
+            if (data[2].equalsIgnoreCase(customerName)) {
+                String movieName = data[0];
+
+                // Check if the new seat is already booked for the same movie
+                boolean seatTaken = false;
                 for (String r : records) {
-                    String[] dd = r.split(",");
-                    if(dd[0]equlsIgnoreCase(d[0]) && Integer.parseInt(dd[1]) == newSeat);
-                    
+                    String[] d = r.split(",");
+                    if (d[0].equalsIgnoreCase(movieName) && Integer.parseInt(d[1]) == newSeat) {
+                        seatTaken = true;
+                        break;
+                    }
+                }
+
+                if (seatTaken) {
+                    System.out.println("Seat " + newSeat + " is already booked for " + movieName);
+                    return;
+                } else {
+                    // Update the seat
+                    records.set(i, movieName + "," + newSeat + "," + customerName);
+                    updated = true;
+                    break;
                 }
             }
         }
+
+        if (updated) {
+            writeToFile(records);
+            System.out.println("Booking updated for " + customerName);
+        } else {
+            System.out.println("Customer not found!");
+        }
     }
-    
-    // ====update====
-    
-    public static void updateBooking(String arg)
+
+    // Delete a booking by customer name
+    public static void deleteBooking(String customerName) {
+        List<String> records = readFile();
+        boolean removed = records.removeIf(line -> line.split(",")[2].equalsIgnoreCase(customerName));
+        if (removed) {
+            writeToFile(records);
+            System.out.println("Booking deleted for " + customerName);
+        } else {
+            System.out.println("Customer not found!");
+        }
+    }
+
+    // Main method to test
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("\n1. Book Ticket\n2. View Bookings\n3. Update Booking\n4. Delete Booking\n5. Exit");
+            System.out.print("Enter choice: ");
+            int choice = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter movie name: ");
+                    String movie = sc.nextLine();
+                    System.out.print("Enter seat number: ");
+                    int seat = sc.nextInt();
+                    sc.nextLine();
+                    System.out.print("Enter customer name: ");
+                    String customer = sc.nextLine();
+                    bookTicket(new Ticket(movie, seat, customer));
+                    break;
+                case 2:
+                    viewBookings();
+                    break;
+                case 3:
+                    System.out.print("Enter customer name to update: ");
+                    String custUpdate = sc.nextLine();
+                    System.out.print("Enter new seat number: ");
+                    int newSeat = sc.nextInt();
+                    sc.nextLine();
+                    updateBooking(custUpdate, newSeat);
+                    break;
+                case 4:
+                    System.out.print("Enter customer name to delete: ");
+                    String custDelete = sc.nextLine();
+                    deleteBooking(custDelete);
+                    break;
+                case 5:
+                    System.out.println("Exiting...");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+}
