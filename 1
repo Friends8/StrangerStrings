@@ -13,7 +13,73 @@ public class PrintString extends Applet {
 #HTML File:
 <html>
 <body>
-    <applet code=" PrintString.class" width="300" height="300">
+    <applet code="PrintString.class" width="300" height="300">
     </applet>
 </body>
 </html>
+
+
+
+
+#Write a program to implement simple applet that set Fore ground , Back ground color drawa rectangle, fill a rectangle and display it.
+Program:
+import java.applet.Applet;
+import java.awt.Color;
+import java.awt.Graphics;
+
+public class ColorRectangleApplet extends Applet {
+    public void init() {
+        setBackground(Color.YELLOW);   
+        setForeground(Color.BLUE);    
+    }
+    public void paint(Graphics g) {
+        g.drawRect(50, 50, 200, 100);
+        g.setColor(Color.RED);
+        g.fillRect(100, 200, 150, 80);
+    }
+}
+
+HTML File:
+
+  <body>
+    <applet code="ColorRectangleApplet.class" width="400" height="400">
+    </applet>
+  </body>
+</html>
+
+
+
+
+
+#Write a Java Applet program to create a simple GUI  consists of  Button, Radio Button, Text Field, Checkbox, and Label.
+Program:
+import java.applet.Applet;
+import java.awt.*;
+public class SimpleGUIApplet extends Applet {
+    public void init() {
+        setLayout(new FlowLayout());
+        Label lbl = new Label("Enter Name:");
+        add(lbl);
+        TextField tf = new TextField(15);
+        add(tf);
+        Checkbox cb1 = new Checkbox("Accept Terms");
+        add(cb1);
+        CheckboxGroup genderGroup = new CheckboxGroup();
+        Checkbox male = new Checkbox("Male", genderGroup, false);
+        Checkbox female = new Checkbox("Female", genderGroup, false);
+        add(male);
+        add(female);
+        Button btn = new Button("Submit");
+        add(btn);
+    }
+}
+
+HTML File:
+<html>
+  <body>
+    <applet code="SimpleGUIApplet.class" width="300" height="200">
+    </applet>
+  </body>
+</html>
+
+
