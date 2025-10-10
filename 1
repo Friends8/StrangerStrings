@@ -277,3 +277,421 @@ public class ColorCanvasApplet extends Applet implements ItemListener {
     <applet code="ColorCanvasApplet.class" width="300" height="200"></applet>
   </body>
 </html>
+
+
+
+
+
+
+
+
+9) Hospital Mangement
+# 
+
+import java.io.*;
+import java.util.*;
+
+class Patient{
+    String id, name, disease;
+    int age;
+     
+    public Patient(String id, String name, int age, String disease){
+        this.id=id;
+        this.name=name;
+        this.age=age;
+        this.disease=disease;
+    }
+   
+    public String toStoring(){
+        return id + "," + name + "," + age + "," + disease;
+    }
+}
+
+class Doctor{
+    String id, name, specialization;
+   
+    public Doctor(String id, String name, String specialization){
+        this.id=id;
+        this.name=name;
+        this.specialization=specialization;
+    }
+   
+    public String toString(){
+        return id + "," + name + "," + specialization;
+    }
+}
+
+class Appointment{
+    String patientId, doctorId, date;
+   
+    public Appointment(String patientId, String doctorId, String date){
+        this.patientId=patientId;
+        this.doctorId=doctorId;
+        this.date=date;
+    }
+   
+    public String toString(){
+        return patientId + "," + doctorId + "," + date;
+    }
+}
+
+public class HospitalManagementSystem {
+    static File patientFile = new File ("patients.txt");
+    static File doctorFile = new File ("doctors.txt");
+    static File appointmentFile = new File ("appointments.txt");
+    
+    //=========Utility===============
+    public static void writeToFile(File file, String data, boolean append){
+        try(FileWriter fw = new FileWriter(file, append)){
+            fw.write(data + "\n");
+        }
+        catch(IOException e){
+            System.out.println("Error Writing file:" + file.getName());
+        }
+    }
+
+    public static List<String> readFile(File file){
+        List<String> lines = new ArrayList<>();
+        if(!file.exists()) return lines;
+        try(Scanner sc = new Scanner(file)){
+            while(sc.hasNextLine()){
+                lines.add(sc.nextLine());
+            }
+        }
+        catch(IOException e){
+            System.out.println("Error Writing file:" + file.getName());
+        }
+        return lines;
+    }
+    
+    //============Patient Section==========
+    public static void addPatient(Patient p){
+        writeToFile(patientFile, p.toString(), true);
+        System.out.println("Patient Added Successfully.");
+    }
+    
+    public static void viewPatients(){
+        List<String> records = readFile(patientFile);
+        if(records.isEmpty()){
+            System.out.println("No patients found.");
+            return;
+        }
+        System.out.println("\n--- Patient Records ---");
+        for(String line : records){
+            String[] d = line.split(",");
+            System.out.println("ID:" + d[0] + "| Name:" + d[1] + "| Age:" + d[2] + "| Disease:" + d[3]);
+        }
+    }
+    
+    //======Doctor Section=======
+    public static void addDoctor(Doctor d){
+        writeToFile(doctorFile, d.toString(), true);
+        System.out.println("Doctor Added Successfully.");
+    }
+    
+    public static void viewDoctors(){
+        List<String> records = readFile(doctorFile);
+        if(records.isEmpty()){
+            System.out.println("No doctors found.");
+            return;
+        }
+        System.out.println("\n--- Doctors Records ---");
+        for(String line : records){
+            String[] d = line.split(",");
+            System.out.println("ID:" + d[0] + "| Name:" + d[1] + "| Specialization:" + d[2]);
+        }
+    }
+    
+    //========Appointment Section==========
+    public static void addAppointment(Appointment a){
+        boolean patientExists = false, doctorExists = false;
+        for(String p : readFile(patientFile)){
+            if(p.split(",")[0].equals(a.patientId)) patientExists = true;
+        }
+        for(String d : readFile(doctorFile)){
+            if(d.split(",")[0].equals(a.doctorId)) doctorExists = true;
+        }
+        
+        if(!patientExists){
+            System.out.println("Inavalid Patient ID.");
+            return;
+        }
+        if(!doctorExists){
+            System.out.println("Inavalid Doctor ID.");
+            return;
+        }
+        writeToFile(appointmentFile, a.toString(), true);
+        System.out.println("Appointmnet booked Successfully.");
+    }
+    
+    public static void viewAppointments(){
+        List<String> records = readFile(appointmentFile);
+        if(records.isEmpty()){
+            System.out.println("No appointments found.");
+            return;
+        }
+        System.out.println("\n--- Appointments ---");
+        for(String line : records){
+            String[] d = line.split(",");
+            System.out.println("PatientID:" + d[0] + "| DoctorID:" + d[1] + "| Date:" + d[2]);
+        }
+    }
+    //========Main Menu======
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        int choice;
+        do{
+          System.out.println("\n===== Hospital Management System =======");
+          System.out.println("1. Add Patients");
+          System.out.println("2. View Patients");
+          System.out.println("3. Add Doctor");
+          System.out.println("4. View Doctors");
+          System.out.println("5. Book Appointment");
+          System.out.println("6. View Appointments");
+          System.out.println("7. Exit");
+          System.out.println("Enter choice: ");
+          choice = sc.nextInt();
+          
+          switch (choice){
+              case 1:
+                  System.out.println("Enter Patient ID:");
+                  String pid = sc.nextLine();
+                  System.out.println("Enter Name:");
+                  String pname = sc.nextLine();
+                  System.out.println("Enter age:");
+                  int age = sc.nextInt(); sc.nextLine();
+                  System.out.println("Enter Disease:");
+                  String disease = sc.nextLine();
+                  addPatient(new Patient(pid, pname, age, disease));
+                  break;
+                  
+              case 2:
+                  viewPatients();
+                  break;
+                  
+                  
+              case 3:
+                  System.out.println("Enter Doctor ID:");
+                  String did = sc.nextLine();
+                  System.out.println("Enter Name:");
+                  String dname = sc.nextLine();
+                  System.out.println("Enter specialization:");
+                  String spec = sc.nextLine();
+                  addDoctor(new Doctor(did, dname, spec));
+                  break;
+
+              case 4:
+                  viewDoctors();
+                  break;
+                  
+                  
+              case 5:
+                  System.out.println("Enter Patient ID:");
+                  String apPid = sc.nextLine();
+                  System.out.println("Enter Doctor ID:");
+                  String apDid = sc.nextLine();
+                  System.out.println("Enter Date (dd-mm-yyyy):");
+                  String date = sc.nextLine();
+                  addAppointment(new Appointment(apPid, apDid, date));
+                  break;
+                  
+              case 6:
+                  viewAppointments();
+                  break;
+
+              case 7:
+                 System.out.println("Exiting...");
+                 break;
+                 
+              default :
+                  System.out.println("Invalid choice.");
+                  
+                  
+
+          }
+        }
+        while(choice != 7);
+        sc.close();
+    }
+}
+
+
+
+
+
+
+
+
+9) Traffic control
+import java.io.*;
+import java.util.Scanner;
+
+public class TrafficControl {
+    static File file = new File("traffic.txt");
+
+    // Create/Update traffic signal
+    public static void writeSignal(String signal) {
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.write(signal);
+            writer.close();
+            System.out.println("Traffic signal updated to: " + signal);
+        } catch (IOException e) {
+            System.out.println("Error while writing file");
+            e.printStackTrace();
+        }
+    }
+
+    // Read current signal
+    public static void readSignal() {
+        try {
+            if (!file.exists()) {
+                System.out.println("No signal found! Please set one first.");
+                return;
+            }
+            Scanner reader = new Scanner(file);
+            if (reader.hasNextLine()) {
+                String signal = reader.nextLine();
+                System.out.println("Current Traffic Signal is: " + signal);
+            } else {
+                System.out.println("File is empty! Please set a signal first.");
+            }
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("Error while reading file");
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int choice;
+
+        do {
+            System.out.println("\n=== Traffic Control Menu ===");
+            System.out.println("1. Set Signal (Red/Yellow/Green)");
+            System.out.println("2. View Current Signal");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
+            sc.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter Signal (Red/Yellow/Green): ");
+                    String signal = sc.nextLine();
+                    writeSignal(signal);
+                    break;
+                case 2:
+                    readSignal();
+                    break;
+                case 3:
+                    System.out.println("Exiting...");
+                    break;
+                default:
+                    System.out.println("Invalid choice! Please try again.");
+            }
+        } while (choice != 3);
+
+        sc.close();
+    }
+}
+
+
+
+
+
+
+
+10) Movie Ticket
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+import java.io.*;
+import java.util.*;
+
+class Ticket {
+    String movieName;
+    int seatNumber;
+    String customerName;
+    
+    public Ticket(String movieName,  int seatNumber,  String customerName) {
+        this.movieName = movieName;
+        this.seatNumber = seatNumber;
+        this.customerName = customerName;
+    }
+    public String toString() {
+        return movieName + "," + seatNumber + "," + customerName;
+    }
+}
+
+public class MovieTicketCRUD {
+    static File ticketFile = new File("ticket.txt");
+    static String[] movies = ("1. Avengers", "2.Inception", "3. Avatar");
+    static int totalSeats = 10;
+    
+    public static void writerToFile(List<String> records) {
+        try (Filewriter fw = new Filewriter(ticketFile, false)) {
+            for (String r : records) fw.writer(r + "\n");
+        } catch(IOException e) {
+            System.out.println("Error writing file");
+        }
+    }
+    public static List<String> readFile() {
+        List<String> lines = new ArrayList<>();
+        if (!ticketFile.exists()) return lines;
+        try (Scanner sc = new Scanner(ticketFile)) {
+            while (sc.hasNextLine()) lines.add(sc.nextLine());
+        } catch(IOException e) {
+            System.out.println("Error writing file");
+    }
+        return lines;
+}
+    
+    public static void bookTicket(Ticket t) {
+        List<String> records = readFile();
+        for (String lines : records) {
+            String[] data = line.aplit(",");
+            if (data[0].equlsIgnoreCase(t.movieName) && Integer.parseInt(data[1]) == t.seatNumber) {
+                System.out.println("seat Already Booked");
+                return;
+            }
+        }
+        records.add(t.toString());
+        writeToFile(records);
+        System.out.println("Ticket booked for " + t.customerName + " | Movie:" + t.movieName + "| Seat:" + t.seatNumber);
+    }
+    
+    public static void viewBookings() {
+        List<String> records = new readFile();
+        if (records.isEmpty()) {
+            System.out.println("No Booking Found");
+            return;
+    }
+        System.out.println("\n--- All Booking ---");
+        for (String line : records) {
+            String[] d = line.split(",");
+            System.out.println("Movie:" + d[0] + " | Seat:" d[1] + " | Customer:" + d[2]);
+        }
+    }
+    
+    public static void updateBooking(String customerName, int newSeat) {
+        List<String> records = readFile();
+        boolean updated = false;
+        for (int i = 0; i < records.size(); i++) {
+            String[] d = records.get(i).split(",");
+            if (d[2].equlsIgnoreCase (customerName)) {
+                for (String r : records) {
+                    String[] dd = r.split(",");
+                    if(dd[0]equlsIgnoreCase(d[0]) && Integer.parseInt(dd[1]) == newSeat);
+                    
+                }
+            }
+        }
+    }
+    
+    // ====update====
+    
+    public static void updateBooking(String arg)
