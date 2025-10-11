@@ -7,7 +7,7 @@ import java.awt.Graphics;
 
 public class PrintString extends Applet {
     public void paint(Graphics g) {
-        g.drawString("Hii Prince whtup", 50, 100);
+        g.drawString("Hii name whtup", 50, 100);
     }
 }
 
@@ -113,7 +113,7 @@ public class MyCircleApplet extends Applet {
         int centerY = appletHeight / 2;
         g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
         g.setFont(new Font("Arial", Font.BOLD, 20));
-        String name = "Prince";
+        String name = "name";
         FontMetrics fm = g.getFontMetrics();
         int textWidth = fm.stringWidth(name);
         int textHeight = fm.getAscent();
@@ -366,7 +366,7 @@ public class HospitalManagementSystem {
     
     //============Patient Section==========
     public static void addPatient(Patient p){
-        writeToFile(patientFile, p.toString(), true);
+        writeToFile(patientFile,p.toString(), true);
         System.out.println("Patient Added Successfully.");
     }
     
@@ -413,7 +413,7 @@ public class HospitalManagementSystem {
         }
         
         if(!patientExists){
-            System.out.println("Inavalid Patient ID.");
+            System.out.println("Invalid Patient ID.");
             return;
         }
         if(!doctorExists){
@@ -421,7 +421,7 @@ public class HospitalManagementSystem {
             return;
         }
         writeToFile(appointmentFile, a.toString(), true);
-        System.out.println("Appointmnet booked Successfully.");
+        System.out.println("Appointment booked Successfully.");
     }
     
     public static void viewAppointments(){
