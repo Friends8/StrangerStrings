@@ -1,1 +1,292 @@
+# 
+1) Create a database called “StudentDB” in mongodb. Create a Collection named “students” and create a Collection named “faculties
+
+
+
+
+# 
+#2)Insert a single document into both collections name “students” and “faculties”. Insert multiple documents (at least 4) into both collections name “students” and “faculties”.
+#Program:
+students(one document) --
+db.students.insertOne({ student_id: 1,
+name: "Ravi Kumar", age: 20,
+course: "BCA", semester: 3
+})
+students(many document) --
+db.students.insertMany([
+{
+},
+{
+student_id: 2,
+name: "Priya Patel", age: 19,
+course: "BBA", semester: 1
+student_id: 3,
+name: "Amit Singh", age: 21,
+course: "BCA", semester: 5
+},
+{
+},
+{
+}
+])
+student_id: 4,
+name: "Neha Verma", age: 20,
+course: "BSc IT", semester: 3
+student_id: 5,
+name: "Arjun Reddy", age: 22,
+course: "MBA", semester: 1
+
+
+faculties(one document) –
+db.faculties.insertOne({ faculty_id: 101,
+name: "Dr. Meena Sharma",
+department: "Computer Science", designation: "Assistant Professor"
+})
+faculties(many document) –
+db.faculties.insertMany([
+{
+faculty_id: 102,
+name: "Prof. Rajesh Gupta", department: "Management", designation: "Professor"
+},
+{
+faculty_id: 103,
+name: "Dr. Kavita Joshi",
+department: "Information Technology", designation: "Associate Professor"
+},
+
+ 
+{
+faculty_id: 104,
+name: "Mr. Sanjay Desai",
+
+department: "Commerce", designation: "Lecturer"
+},
+{
+faculty_id: 105,
+name: "Dr. Anjali Mehta",
+department: "Computer Science", designation: "Professor"
+}
+])
+
+
+
+
+
+
+
+#
+# 3)Display all available databases. Display all documents in a collection “students”. Display only name and course field in “students” collection.
+Display only name and department field in “faculties” collection. 
+
+i) Display all available databases
+# #Program:
+  show dbs
+
+ii) Display all documents in a collection “students”.
+# #Program:
+   db.students.find()
+
+iii) Display only name and course field in “students” collection.
+# #Program:
+  db.students.find({}, { name: 1, course: 1, _id: 0 })
+
+
+iv) Display only name and department field in faculties collection
+# #Program:
+   db.faculties.find({}, { name: 1, department: 1, _id: 0 })
+
+
+
+
+
+
+
+
+# 4) Find Students whose age is greater than 20. Find students whose age is greater than 20 and score is less than 80. Find all students who live in “surat” or “vadodara”. Find all students whose course is BCA in the “students” collection.
+
+i) Find Students whose age is greater than 20
+# #Program:
+  db.students.find({ age: { $gt: 20 } })
+
+ii) Find Students whose age is greater than 20 AND score is less than 80
+# #Program:
+   db.students.find({ age: { $gt: 20 }, score: { $lt: 80 } })
+
+iii) Find all students who live in “surat” or “vadodara”.
+# #Program:
+   db.students.find({ city: { $in: ["surat", "vadodara"] } })
+
+iv) Display only name and department field in faculties collection
+# #Program:
+   db.students.find({ course: "BCA" })
+
+
+
+
+
+
+
+# 5) Find all faculties aged 35 or older who live in Surat, from “faculties” collection. Sort the results of the previous query by age, in ascending order. Find faculties whose salary is greater than or equal to 30000 and less than 250000. Sort the results of the previous query by salary, in descending
+order. 
+
+i) Find all faculties aged 35 or older who live in Surat, from “faculties” collection.
+# #Program:
+  db.faculties.find({ age: { $gte: 35 }, city: "Surat" })
+
+ii) Sort the results of the previous query by age, in ascending order
+# #Program:
+   db.faculties.find({ age: { $gte: 35 }, city: "Surat" }).sort({ age: 1 })
+
+iii) Find faculties whose salary is greater than or equal to 30000 and less than 250000.
+# #Program:
+   db.faculties.find({ salary: { $gte: 30000, $lt: 250000 } })
+
+iv) Sort the results of the previous query by salary, in descending order.
+# #Program:
+   db.faculties.find({ salary: { $gte: 30000, $lt: 250000 } }).sort({ salary: -1 })
+
+
+
+
+
+
+
+
+# 6) Find top five faculties with highest salary. Find faculties whose name starts with “S”. Find faculties who are not from “Delhi”.
+
+i) Find top five faculties with highest salary.
+# #Program:
+  db.faculties.find().sort({ salary: -1 }).limit(5)
+
+ii) SFind faculties whose name starts with “S”.
+# #Program:
+   db.faculties.find({ name: { $regex: /^S/, $options: "i" } })
+
+iii) Find faculties who are not from “Delhi”.
+# #Program:
+   db.faculties.find({ city: { $ne: "Delhi" } })
+
+
+
+
+
+
+# 7) Update a single document into “students” collection (ex:- age:25). Update all students enrolled in the “BSC” course by setting their batch 2025.
+
+i) Update a single document into “students” collection (ex:- age:25).
+# #Program:
+  db.students.updateOne(
+{ name: "Ravi Kumar" },
+{ $set: { age: 25 } }
+)
+
+
+ii) Update all students enrolled in the “BSC” course by setting their batch 2025.
+# #Program:
+   db.students.updateMany(
+{ course: "BSC" },	// filter condition
+{ $set: { batch: 2025 } } // update action
+)
+
+
+
+
+
+
+
+# 8) Delete only one student named “Bob” from the “students” collection. Delete all documents from the “students” collection where the course is “BA”.
+i) Delete only one student named “Bob” from the “students” collection
+# #Program:
+  db.students.deleteOne({ name: "Bob" })
+
+
+ii) Delete all documents from the “students” collection where the course is “BA”.
+# #Program:
+   db.students.deleteMany({ course: "BA" })
+
+
+
+
+
+
+# 9) Count the total students in the “students” collection who live in “surat”. Count the total faculties in the “faculties” collection whose department is BCA.
+i) Count the total students in the “students” collection who live in “surat”.
+# #Program:
+  db.students.countDocuments({ city: "Surat" })
+
+
+ii) Count the total faculties in the “faculties” collection whose department is BCA.
+# #Program:
+   db.faculties.countDocuments({ department: "BCA" })
+
+
+
+
+
+
+
+# 10)Create a database named “collegeDB”. Create a collection named “course”. Drop a collection “course”. Drop database “collegeDB”.
+i) Create a database named “collegeDB”.
+# #Program:
+  db.faculties.find().sort({ salary: -1 }).limit(5)
+
+ii) SCreate a collection named “course”.
+# #Program:
+   db.faculties.find({ name: { $regex: /^S/, $options: "i" } })
+
+iii) Drop a collection “course”.
+# #Program:
+   db.faculties.find({ city: { $ne: "Delhi" } })
+
+iv) Drop database “collegeDB”.
+# #Program:
+  Drop database “collegeDB”.
+
+
+
+
+
+
+
+  # 11) Create an index on the course field into “students” collection. View all Indexes of a collection “students”. Count the number of students enrolled in each distinct course.
+
+i) Create an index on the course field into “students” collection
+# #Program:
+   db.students.createIndex({ course: 1 })
+
+ii) View all Indexes of a collection “students”
+# #Program:
+   db.students.getIndexes()
+
+iii) Count the number of students enrolled in each distinct course.
+# #Program:
+  db.students.aggregate([
+{
+$group: {
+_id: "$course",	// group by course total_students: { $sum: 1 } // count students
+}
+}
+])
+
+
+
+
+
+
+# 12) Create an index on the Department field into “faculties” collection. Count the number of faculties of each distinct department.
+
+i) Create an index on the Department field into “faculties” collection.
+# #Program:
+   db.faculties.createIndex({ department: 1 })
+
+ii) Count the number of faculties of each distinct department.
+# #Program:
+   db.faculties.aggregate([
+{
+$group: {
+_id: "$department",	// group by department total_faculties: { $sum: 1 } // count faculties
+}
+}
+])
+
 
